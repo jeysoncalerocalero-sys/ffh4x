@@ -12,6 +12,13 @@ jobs:
       - name: Clonar repo
         uses: actions/checkout@v4
 
+      - name: Ver estructura
+        run: |
+          echo "===== RAIZ ====="
+          ls -la
+          echo "===== WORKFLOWS ====="
+          ls -la .github/workflows
+
       - name: Instalar JDK 17
         uses: actions/setup-java@v4
         with:
@@ -40,10 +47,13 @@ jobs:
           gradle-version: '8.9'
 
       - name: Compilar
+        working-directory: .github/workflows
         run: gradle assembleDebug --no-daemon
 
       - name: Publicar APK
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ffh4x-debug
-          path: app/build/outputs/apk/debug/*.apk
+          path: .github/workflows/app/build/outputs/apk/debug/*.apk
+          include-hidden-files: true
